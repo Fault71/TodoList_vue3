@@ -1,17 +1,22 @@
 <template>
-  <ul class="todo-middle">
+  <ul class=" w-full border-t">
     <li
-      class="todo-li"
+      class="group relative h-8 shadow"
       v-for="todo in filterData"
       :key="todo.id"
     >
       <input
-        class="mid-inp1"
+        :id="todo.id"
+        class="absolute top-0 left-1 w-4 h-4 my-2 mx-0 appearance-none"
         type="checkbox"
         v-model="todo.completed"
       >
+      <label
+        :for="todo.id"
+        class="absolute z-0 w-4 h-4 my-2 mx-1 border border-gray-300 rounded-full">
+      </label>
       <input
-        class="mid-inp2"
+        :class="getClass(todo.completed)"
         type="text"
         v-model="todo.name"
         :readonly="todo.uneditable"
@@ -19,10 +24,10 @@
         @blur="finishEditing(todo.id)"
       >
       <button
-        class="delete"
+        class="hidden absolute top-2 right-3 w-2 h-2 group-hover:block text-xs text-red-600"
         @click="destroy(todo.id)"
       >
-        删除
+        ╳
       </button>
     </li>
   </ul>
@@ -58,6 +63,11 @@ export default {
       return filter[props.visibility](props.todos);
     });
 
+    function getClass(status) {
+      if (status === true) return 'done';
+      return 'undone';
+    }
+
     function destroy(id) {
       context.emit('deleteTodo', id);
     }
@@ -76,6 +86,7 @@ export default {
 
     return {
       filterData,
+      getClass,
       destroy,
       toEdit,
       finishEditing,
@@ -85,40 +96,21 @@ export default {
 </script>
 
 <style scoped>
-  .todo-middle{
-    float: left;
-    width: 100%;
+  .undone{
+    @apply w-full h-8 py-1 pl-8 outline-none border-b text-xs
   }
-  .todo-li{
-    float: left;
-    width: 100%;
-    border: 1px solid;
-    color: black;
-    position: relative;
+  .done{
+    @apply w-full h-8 py-1 pl-8 outline-none border-b text-xs line-through text-gray-300
   }
-  .mid-inp1{
-    float: left;
-    width: 50px;
-    height: 30px;
-    border: none;
-    outline: none;
+  li input:first-child:checked + label{
+    @apply border-blue-200
   }
-  .mid-inp2{
-    float: right;
-    width: 460px;
-    height: 30px;
-  }
-  .delete{
-    display: none;
-    width: 30px;
-    height: 15px;
+  li input:first-child:checked + label::after{
+    content: '\2713';
     position: absolute;
-    z-index: 2;
-    right:10px;
-    top:10px;
-    font-size: 10px;
-  }
-  .todo-li:hover .delete{
-    display: block;
+    top: 0px;
+    left: 8px;
+    font-size: 20px;
+    color: rgb(117, 196, 0);
   }
 </style>

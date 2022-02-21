@@ -1,31 +1,33 @@
 <template>
   <div
-    class="todo-bottom"
+    class="flex flex-row flex-nowrap justify-between items-center w-full h-5 bg-white"
     v-show="total"
   >
-    <div class="count">{{leftTodo}} items left</div>
-    <div class="status">
+    <div class="pl-1.5 cursor-default">
+      {{leftTodo}} items left
+    </div>
+    <div>
       <button
-        class="unselected"
+        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
         @click="allButton"
       >
         All
       </button>
       <button
-        class="unselected"
+        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
         @click="activeButton"
       >
         Active
       </button>
       <button
-        class="unselected"
+        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
         @click="completedButton"
       >
         Completed
       </button>
     </div>
     <button
-      class="clear"
+      class="hover:underline pr-1.5"
       v-show="clearDisplay()"
       @click="clearCompleted"
     >
@@ -91,38 +93,5 @@ export default {
 </script>
 
 <style scoped>
-  .todo-bottom{
-    width: 100%;
-    float: left;
-    border: 1px solid;
-  }
-  .count{
-    float: left;
-    height: 50px;
-    line-height: 50px;
-    padding-right: 100px;
-  }
-  .status{
-    float: left;
-    height: 50px;
-  }
-  .status button{
-    margin: 17px 10px 5px 10px;
-    background-color: white;
-  }
-  .unselected{
-    border: none;
-  }
-  .unselected:hover{
-    border-bottom: 1px grey solid;
-  }
-  .clear{
-    float: right;
-    height: 50px;
-    background-color: white;
-    border: none;
-  }
-  .clear:hover{
-    color: red;
-  }
+
 </style>

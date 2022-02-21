@@ -1,13 +1,15 @@
 <template>
   <div
     id="app"
-    class="clearfix"
+    class="clearfix mx-auto w-80"
   >
-    <div class="container clearfix">
-      <div class="todo-header">
-        <div class="title">todos</div>
+    <div class="clearfix w-full" >
+      <div>
+        <div class="text-4xl text-red-500 text-center">
+          todos
+        </div>
       </div>
-      <div class="todo-main">
+      <div class="clearfix w-full">
         <TodoListTop
           :todos='todos'
           @addTodo='addTodo'
@@ -83,38 +85,11 @@ export default {
 </script>
 
 <style>
-  *{
-    text-decoration: none;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .clearfix::before,.clearfix::after{
-    content: '';
-    display: table;
-    clear: both;
-  }
-  #app{
-    background-color: gainsboro;
-    height: 100%;
-  }
-  .container{
-    width: 550px;
-    margin: 20px auto 50px;
-    background-color: white;
-  }
-  .todo-header{
-    float: left;
-    width: 100%;
-  }
-  .todo-header .title{
-    text-align: center;
-    font-size: 35px;
-    color: red;
-    margin: 20px 0;
-  }
-  .todo-main{
-    float: left;
-    width: 100%;
-  }
+html{
+  font-size: 32px;
+  background-color: rgb(235, 235, 235);
+}
+#app{
+  font-size: 16px;
+}
 </style>

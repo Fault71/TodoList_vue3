@@ -1,8 +1,13 @@
 <template>
-  <div class="todo-topper">
-    <button @click="selectAll">全选</button>
+  <div class="flex flex-row flex-nowrap  items-center h-10 w-full bg-white shadow">
+    <button
+      class="w-6 h-10 text-xs"
+      @click="selectAll"
+    >
+      ⬇
+    </button>
     <input
-      class="top-inp"
+      class="flex-1 h-full pl-1 outline-none text-sm placeholder-gray-200"
       type="text"
       placeholder="What needs to be done?"
       v-model.trim="item"
@@ -68,25 +73,5 @@ export default {
 </script>
 
 <style scoped>
-  .todo-topper{
-    float: left;
-    width: 100%;
-    border: 2px  solid;
-  }
-  .todo-topper button{
-    float: left;
-    width: 50px;
-    height: 80px;
-    background-color: white;
-    border: none;
-  }
 
-  .todo-topper .top-inp{
-    float: right;
-    width: 460px;
-    height: 60px;
-    padding: 10px 20px;
-    border: none;
-    outline: none;
-  }
 </style>
