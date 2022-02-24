@@ -16,16 +16,25 @@
   </div>
 </template>
 
-<script>
+<script lang='ts'>
 import { nanoid } from 'nanoid';
-import { reactive, toRef } from 'vue';
+import { reactive, toRef, defineComponent, PropType } from 'vue';
 
-export default {
+interface Todo {
+  id: number,
+  name: string,
+  completed: boolean,
+  uneditable :boolean
+};
+
+export default defineComponent({
   name: 'TodoListTop',
 
   props: {
-    todos: Array,
-    addTodo: Function,
+    todos: {
+      type: Array as PropType<Todo[]>,
+      required: true,
+    },
   },
 
   emits: ['addTodo'],
@@ -35,7 +44,7 @@ export default {
       item: '',
     });
 
-    function add() {
+    function add(): void {
       if (data.item === '') return;
       const newTodo = {
         id: nanoid(),
@@ -47,7 +56,7 @@ export default {
       data.item = '';
     }
 
-    function selectAll() {
+    function selectAll(): void {
       const i = props.todos.reduce((pre, cur) => {
         if (cur.completed === true) pre += 1;
         return pre;
@@ -69,7 +78,7 @@ export default {
       selectAll,
     };
   },
-};
+});
 </script>
 
 <style scoped>

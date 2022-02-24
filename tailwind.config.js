@@ -6,8 +6,7 @@ module.exports = {
     './src/components/TodoListBottom.vue',
   ],
   theme: {
-    extend: {
-    },
+    extend: {},
   },
   variants: {
     extend: {

@@ -7,6 +7,7 @@ module.exports = {
   extends: [
     'plugin:vue/essential',
     'airbnb-base',
+    'plugin:@typescript-eslint/recommended',
   ],
   globals: {
     Atomics: 'readonly',
@@ -18,6 +19,7 @@ module.exports = {
   },
   plugins: [
     'vue',
+    '@typescript-eslint',
   ],
   rules: {
     'linebreak-style': [0, 'error', 'windows'],

@@ -33,52 +33,64 @@
   </ul>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script lang='ts'>
+import { computed, defineComponent, PropType } from 'vue';
 
-export default {
+interface Todo {
+  id: number,
+  name: string,
+  completed: boolean,
+  uneditable :boolean
+};
+
+export default defineComponent({
   name: 'TodoListMiddle',
 
   props: {
-    todos: Array,
-    deleteTodo: Function,
-    visibility: String,
+    todos: {
+      type: Array as PropType<Todo[]>,
+      required: true,
+    },
+    visibility: {
+      type: String,
+      required: true,
+    },
   },
 
   emits: ['deleteTodo'],
 
   setup(props, context) {
     const filterData = computed(() => {
-      const filter = {
-        all(todos) {
+      const filter: { [k:string]: Function } = {
+        all(todos: Todo[]): Todo[] {
           return todos;
         },
-        active(todos) {
+        active(todos: Todo[]): Todo[] {
           return todos.filter((todo) => !todo.completed);
         },
-        completed(todos) {
+        completed(todos: Todo[]): Todo[] {
           return todos.filter((todo) => todo.completed);
         },
       };
       return filter[props.visibility](props.todos);
     });
 
-    function getClass(status) {
+    function getClass(status: boolean): string {
       if (status === true) return 'done';
       return 'undone';
     }
 
-    function destroy(id) {
+    function destroy(id: number): void {
       context.emit('deleteTodo', id);
     }
 
-    function toEdit(id) {
+    function toEdit(id: number): void {
       props.todos.forEach((todo) => {
         if (todo.id === id) todo.uneditable = false;
       });
     }
 
-    function finishEditing(id) {
+    function finishEditing(id: number): void {
       props.todos.forEach((todo) => {
         if (todo.id === id) todo.uneditable = true;
       });
@@ -92,7 +104,7 @@ export default {
       finishEditing,
     };
   },
-};
+});
 </script>
 
 <style scoped>

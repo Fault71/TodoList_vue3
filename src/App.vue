@@ -29,13 +29,27 @@
   </div>
 </template>
 
-<script>
-import { reactive, toRef, watch } from 'vue';
+<script lang='ts'>
+import {
+  reactive, toRef, watch, defineComponent,
+} from 'vue';
 import TodoListTop from './components/TodoListTop.vue';
 import TodoListMiddle from './components/TodoListMiddle.vue';
 import TodoListBottom from './components/TodoListBottom.vue';
 
-export default {
+interface Todo {
+  id: number,
+  name: string,
+  completed: boolean,
+  uneditable :boolean
+};
+
+interface Data {
+  todos: Todo[],
+  visibility: string
+};
+
+export default defineComponent({
   name: 'App',
 
   components: {
@@ -45,30 +59,30 @@ export default {
   },
 
   setup() {
-    const data = reactive({
-      todos: JSON.parse(localStorage.getItem('todos')) || [],
+    const data:Data = reactive({
+      todos: JSON.parse(localStorage.getItem('todos') as string) || [],
       visibility: 'all',
     });
 
     watch(
       () => data.todos,
-      (value) => { localStorage.setItem('todos', JSON.stringify(value)); },
+      (value: object[]) => { localStorage.setItem('todos', JSON.stringify(value)); },
       { deep: true },
     );
 
-    function addTodo(todo) {
+    function addTodo(todo: Todo): void {
       data.todos.unshift(todo);
     }
 
-    function deleteTodo(id) {
-      data.todos = data.todos.filter((todo) => todo.id !== id);
+    function deleteTodo(id: number): void {
+      data.todos = data.todos.filter((todo) => (<Todo>todo).id !== id);
     }
 
-    function clearTodo() {
-      data.todos = data.todos.filter((todo) => !todo.completed);
+    function clearTodo(): void {
+      data.todos = data.todos.filter((todo) => !(<Todo>todo).completed);
     }
 
-    function getVisibility(status) {
+    function getVisibility(status: string): void {
       data.visibility = status;
     }
 
@@ -81,7 +95,7 @@ export default {
       getVisibility,
     };
   },
-};
+});
 </script>
 
 <style>

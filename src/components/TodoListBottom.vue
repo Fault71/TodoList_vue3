@@ -36,15 +36,24 @@
   </div>
 </template>
 
-<script>
-import { computed } from 'vue';
+<script lang='ts'>
+import { computed, defineComponent, PropType } from 'vue';
 
-export default {
+interface Todo {
+  id: number,
+  name: string,
+  completed: boolean,
+  uneditable :boolean
+};
+
+export default defineComponent({
   name: 'TodoListBottom',
 
   props: {
-    todos: Array,
-    clearTodo: Function,
+    todos: {
+      type: Array as PropType<Todo[]>,
+      required: true,
+    },
   },
 
   emits: ['clearTodo', 'getVisibility'],
@@ -57,24 +66,24 @@ export default {
       return pre;
     }, 0));
 
-    function clearCompleted() {
+    function clearCompleted(): void {
       context.emit('clearTodo');
     }
 
-    function allButton() {
+    function allButton(): void {
       context.emit('getVisibility', 'all');
     }
 
-    function activeButton() {
+    function activeButton(): void {
       context.emit('getVisibility', 'active');
     }
 
-    function completedButton() {
+    function completedButton(): void {
       context.emit('getVisibility', 'completed');
     }
 
-    function clearDisplay() {
-      if (props.todos.length - props.leftTodo <= 0) return false;
+    function clearDisplay(): boolean {
+      if (props.todos.length - leftTodo.value <= 0) return false;
       return true;
     }
 
@@ -89,7 +98,7 @@ export default {
     };
   },
 
-};
+});
 </script>
 
 <style scoped>
