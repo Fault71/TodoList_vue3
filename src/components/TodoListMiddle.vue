@@ -86,7 +86,7 @@ export default defineComponent({
   emits: ['deleteTodo'],
 
   setup(props, context) {
-    let data: Data = reactive({
+    const data: Data = reactive({
       editedTodo: {}
     });
 
