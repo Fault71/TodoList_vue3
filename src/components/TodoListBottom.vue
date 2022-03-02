@@ -1,35 +1,44 @@
 <template>
   <div
-    class="flex flex-row flex-nowrap justify-between items-center w-full h-5 bg-white"
-    v-show="total"
+    class="flex flex-row justify-between items-center w-full h-5 bg-white text-tiny"
+    v-show="totalCount"
   >
     <div class="pl-1.5 cursor-default">
-      {{leftTodo}} items left
+      {{activeTodos}} items left
     </div>
-    <div>
+    <div class="flex-grow-0 pr-1">
       <button
-        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
-        @click="allButton"
+        :class="{
+          btn: true,
+          selected: visibility === 'all',
+        }"
+        @click="showAllTodos"
       >
         All
       </button>
       <button
-        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
-        @click="activeButton"
+        :class="{
+          btn: true,
+          selected: visibility === 'active',
+        }"
+        @click="showActiveTodos"
       >
         Active
       </button>
       <button
-        class="inline-block p-0.5 mx-px border border-white hover:border-yellow-200"
-        @click="completedButton"
+        :class="{
+          btn: true,
+          selected: visibility === 'completed',
+        }"
+        @click="showCompletedTodos"
       >
         Completed
       </button>
     </div>
     <button
       class="hover:underline pr-1.5"
-      v-show="clearDisplay()"
-      @click="clearCompleted"
+      v-show="clearCompletedButton()"
+      @click="clearCompletedTodos"
     >
       Clear completed
     </button>
@@ -38,13 +47,7 @@
 
 <script lang='ts'>
 import { computed, defineComponent, PropType } from 'vue';
-
-interface Todo {
-  id: number,
-  name: string,
-  completed: boolean,
-  uneditable :boolean
-};
+import { Todo } from '../App.vue';
 
 export default defineComponent({
   name: 'TodoListBottom',
@@ -54,47 +57,50 @@ export default defineComponent({
       type: Array as PropType<Todo[]>,
       required: true,
     },
+    visibility: {
+      type: String,
+      required: true,
+    },
   },
 
-  emits: ['clearTodo', 'getVisibility'],
+  emits: ['clearTodo', 'changeVisibility'],
 
   setup(props, context) {
-    const total = computed(() => props.todos.length);
+    const totalCount = computed(() => props.todos.length);
 
-    const leftTodo = computed(() => props.todos.reduce((pre, cur) => {
-      if (cur.completed !== true) pre += 1;
-      return pre;
+    const activeTodos = computed(() => props.todos.reduce((pre, cur) => {
+      return cur.completed ? pre : pre + 1;
     }, 0));
 
-    function clearCompleted(): void {
+    function clearCompletedTodos(): void {
       context.emit('clearTodo');
     }
 
-    function allButton(): void {
-      context.emit('getVisibility', 'all');
+    function showAllTodos(): void {
+      context.emit('changeVisibility', 'all');
     }
 
-    function activeButton(): void {
-      context.emit('getVisibility', 'active');
+    function showActiveTodos(): void {
+      context.emit('changeVisibility', 'active');
     }
 
-    function completedButton(): void {
-      context.emit('getVisibility', 'completed');
+    function showCompletedTodos(): void {
+      context.emit('changeVisibility', 'completed');
     }
 
-    function clearDisplay(): boolean {
-      if (props.todos.length - leftTodo.value <= 0) return false;
+    function clearCompletedButton(): boolean {
+      if (props.todos.length - activeTodos.value <= 0) return false;
       return true;
     }
 
     return {
-      total,
-      leftTodo,
-      clearCompleted,
-      allButton,
-      activeButton,
-      completedButton,
-      clearDisplay,
+      totalCount,
+      activeTodos,
+      clearCompletedTodos,
+      showAllTodos,
+      showActiveTodos,
+      showCompletedTodos,
+      clearCompletedButton,
     };
   },
 
@@ -102,5 +108,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
+.btn{
+  @apply inline-block p-0.5 mx-px border border-white hover:border-yellow-200
+}
+.selected{
+  @apply border-yellow-400
+}
 </style>

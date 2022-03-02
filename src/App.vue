@@ -21,8 +21,9 @@
         />
         <TodoListBottom
           :todos='todos'
+          :visibility='visibility'
           @clearTodo='clearTodo'
-          @getVisibility='getVisibility'
+          @changeVisibility='changeVisibility'
         />
       </div>
     </div>
@@ -37,11 +38,10 @@ import TodoListTop from './components/TodoListTop.vue';
 import TodoListMiddle from './components/TodoListMiddle.vue';
 import TodoListBottom from './components/TodoListBottom.vue';
 
-interface Todo {
+export interface Todo {
   id: number,
   name: string,
   completed: boolean,
-  uneditable :boolean
 };
 
 interface Data {
@@ -82,7 +82,7 @@ export default defineComponent({
       data.todos = data.todos.filter((todo) => !(<Todo>todo).completed);
     }
 
-    function getVisibility(status: string): void {
+    function changeVisibility(status: string): void {
       data.visibility = status;
     }
 
@@ -92,18 +92,9 @@ export default defineComponent({
       addTodo,
       deleteTodo,
       clearTodo,
-      getVisibility,
+      changeVisibility,
     };
   },
 });
 </script>
 
-<style>
-html{
-  font-size: 32px;
-  background-color: rgb(235, 235, 235);
-}
-#app{
-  font-size: 16px;
-}
-</style>

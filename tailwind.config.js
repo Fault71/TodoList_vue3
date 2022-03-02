@@ -1,11 +1,14 @@
 module.exports = {
   content: [
-    './src/App.vue',
-    './src/components/TodoListTop.vue',
-    './src/components/TodoListMiddle.vue',
-    './src/components/TodoListBottom.vue',
+    "./src/**/*.{vue,ts}"
   ],
   theme: {
+    fontSize: {
+      'tiny': '.5rem',
+      'xs': '.75rem',
+      'sm': '.875rem',
+      '4xl': '2.25rem',
+    },
     extend: {},
   },
   variants: {

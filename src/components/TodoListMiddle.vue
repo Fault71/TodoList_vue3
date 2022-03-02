@@ -1,47 +1,73 @@
 <template>
   <ul class=" w-full border-t">
     <li
-      class="group relative h-8 shadow"
+      class="group relative shadow bg-white border-b"
       v-for="todo in filterData"
       :key="todo.id"
     >
-      <input
-        :id="todo.id"
-        class="absolute top-0 left-1 w-4 h-4 my-2 mx-0 appearance-none"
-        type="checkbox"
-        v-model="todo.completed"
+      <div
+        :class="{
+          view: true,
+          'view-editing': todo === editedTodo,
+        }"
       >
-      <label
-        :for="todo.id"
-        class="absolute z-0 w-4 h-4 my-2 mx-1 border border-gray-300 rounded-full">
-      </label>
+        <input
+          :id="todo.id"
+          type="checkbox"
+          class="w-4 h-4 my-2 ml-2 appearance-none"
+          v-model="todo.completed"
+        >
+        <label
+          :for="todo.id"
+          :class="{
+            'label-unselected': true,
+            'label-selected': todo.completed,
+          }"
+        >
+          <span
+            v-show="todo.completed"
+            class="absolute left-0.5 text-green-400 text-xs select-none"
+          >
+            &#8730;
+          </span>
+        </label>
+        <label
+          :class="{
+            active: true,
+            done: todo.completed,
+          }"
+          @dblclick="toEdit(todo.id)"
+        >
+          {{todo.name}}
+        </label>
+        <button
+          class="hidden absolute top-2 right-3 w-2 h-2 group-hover:block text-xs text-red-600"
+          @click="destroyTodo(todo.id)"
+        >
+          &#935;
+        </button>
+      </div>
       <input
-        :class="getClass(todo.completed)"
         type="text"
+        :class="{
+          edit: true,
+          'edit-editing': todo === editedTodo,
+        }"
         v-model="todo.name"
-        :readonly="todo.uneditable"
-        @dblclick="toEdit(todo.id)"
+        v-focus="todo === editedTodo"
         @blur="finishEditing(todo.id)"
       >
-      <button
-        class="hidden absolute top-2 right-3 w-2 h-2 group-hover:block text-xs text-red-600"
-        @click="destroy(todo.id)"
-      >
-        ╳
-      </button>
     </li>
   </ul>
 </template>
 
 <script lang='ts'>
-import { computed, defineComponent, PropType } from 'vue';
+import { computed, defineComponent, PropType, reactive, toRef } from 'vue';
+import { Todo } from '../App.vue';
 
-interface Todo {
-  id: number,
-  name: string,
-  completed: boolean,
-  uneditable :boolean
-};
+interface Data {
+  editedTodo :object
+}
 
 export default defineComponent({
   name: 'TodoListMiddle',
@@ -60,6 +86,10 @@ export default defineComponent({
   emits: ['deleteTodo'],
 
   setup(props, context) {
+    let data: Data = reactive({
+      editedTodo: {}
+    });
+
     const filterData = computed(() => {
       const filter: { [k:string]: Function } = {
         all(todos: Todo[]): Todo[] {
@@ -75,54 +105,64 @@ export default defineComponent({
       return filter[props.visibility](props.todos);
     });
 
-    function getClass(status: boolean): string {
-      if (status === true) return 'done';
-      return 'undone';
-    }
-
-    function destroy(id: number): void {
+    function destroyTodo(id: number): void {
       context.emit('deleteTodo', id);
     }
 
     function toEdit(id: number): void {
       props.todos.forEach((todo) => {
-        if (todo.id === id) todo.uneditable = false;
+        if (todo.id === id) data.editedTodo = todo;
       });
     }
 
     function finishEditing(id: number): void {
       props.todos.forEach((todo) => {
-        if (todo.id === id) todo.uneditable = true;
+        if (todo.id === id) data.editedTodo = {};
       });
     }
 
     return {
+      editedTodo: toRef(data, 'editedTodo'),
       filterData,
-      getClass,
-      destroy,
+      destroyTodo,
       toEdit,
       finishEditing,
     };
+  },
+
+  directives: {
+    focus: function(el,binding){
+      if(binding.value) {
+        el.focus();
+      };
+    },
   },
 });
 </script>
 
 <style scoped>
-  .undone{
-    @apply w-full h-8 py-1 pl-8 outline-none border-b text-xs
+  .view{
+    @apply h-8
   }
-  .done{
-    @apply w-full h-8 py-1 pl-8 outline-none border-b text-xs line-through text-gray-300
+  .view-editing{
+    @apply hidden
   }
-  li input:first-child:checked + label{
+  .label-unselected{
+    @apply absolute left-2 w-4 h-4 my-2 border border-gray-300 rounded-full
+  }
+  .label-selected{
     @apply border-blue-200
   }
-  li input:first-child:checked + label::after{
-    content: '\2713';
-    position: absolute;
-    top: 0px;
-    left: 8px;
-    font-size: 20px;
-    color: rgb(117, 196, 0);
+  .active{
+    @apply inline-block w-72 h-8 py-1 pl-2 outline-none text-xs align-top leading-6
+  }
+  .done{
+    @apply  line-through text-gray-300
+  }
+  .edit{
+    @apply hidden w-72 h-8 border border-gray-400 ml-6 py-1 pl-2 outline-none text-xs shadow-inner
+  }
+  .edit-editing{
+    @apply inline-block
   }
 </style>
